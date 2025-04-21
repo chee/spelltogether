@@ -1,0 +1,168 @@
+body {
+	font-size: 18px;
+
+	--remote-color: var(--carribean-current);
+	--local-color: var(--blue-crayola);
+	--centre-color: var(--sunglow);
+	--letter-box-size: 80px;
+	--letter-size: 40px;
+	display: flex;
+	flex-direction: column;
+	place-content: center;
+	place-items: center;
+	text-align: center;
+}
+
+* {
+	user-select: none;
+}
+
+.letters {
+	margin-top: 1em;
+	display: flex;
+	flex-direction: row;
+	gap: 1em;
+	position: relative;
+	height: 200px;
+	width: 200px;
+	margin: auto;
+	padding-bottom: 2em;
+}
+
+.letter {
+	position: absolute;
+	top: 33%;
+	left: 30%;
+	width: 40%;
+	height: 33%;
+	svg {
+		height: var(--letter-box-size);
+		width: var(--letter-box-size);
+		polygon {
+			fill: white;
+			transition: fill 0.5;
+			&.inner {
+				fill: white;
+				.centre.letter & {
+					fill: var(--centre-color);
+				}
+			}
+			&.local {
+				fill: black;
+			}
+			.remote.letter &.remote {
+				fill: var(--remote-color);
+			}
+			.local.letter &.local {
+				fill: var(--local-color);
+			}
+			.local.letter &.inner {
+				fill: color-mix(in srgb, var(--local-color), white 70%);
+			}
+		}
+		text {
+			fill: black;
+			font-size: var(--letter-size);
+			font-weight: bold;
+		}
+	}
+	&.letter-1 {
+		translate: -75% -50%;
+	}
+	&.letter-2 {
+		translate: -0% -100%;
+	}
+	&.letter-3 {
+		translate: 75% -50%;
+	}
+	&.letter-4 {
+		translate: 0% 100%;
+	}
+	&.letter-5 {
+		translate: 75% 50%;
+	}
+	&.letter-6 {
+		translate: -75% 50%;
+	}
+}
+
+.guessers {
+	min-height: 4em;
+	font-size: 1.2em;
+}
+
+.guess {
+	display: block;
+	position: relative;
+	min-height: 1em;
+
+	&.remote {
+		color: var(--remote-color);
+		.guesser {
+			background: var(--remote-color);
+			color: white;
+		}
+	}
+
+	&.local {
+		color: var(--local-color);
+		.guesser {
+			background: var(--local-color);
+			color: white;
+		}
+	}
+
+	.guesser {
+		font-size: 10px;
+		border-radius: 12px;
+		padding: 2px 4px;
+		position: absolute;
+		left: 0;
+	}
+}
+
+.buttons {
+	display: flex;
+	gap: 1em;
+	margin: 2em auto;
+	place-content: center;
+	place-items: center;
+	button {
+		background: white;
+		padding: 12px;
+		border: 1px solid;
+		border-radius: 20px;
+		&:active {
+			background: #f7f7f7;
+		}
+	}
+}
+
+.message {
+	position: absolute;
+	top: 80px;
+	left: 50%;
+	translate: -50% 0;
+	font-size: 20px;
+	border: 1px solid;
+	padding: 5px 10px;
+	border-radius: 4px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	background: white;
+	opacity: 0;
+	transition: opacity 0 linear;
+	&.shown {
+		opacity: 1;
+		transition: opacity 0.2s linear;
+	}
+}
+
+.guessletter {
+	font-weight: bold;
+	&.bad {
+		opacity: 0.3;
+	}
+	&.centre {
+		color: var(--centre-color);
+	}
+}

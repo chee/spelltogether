@@ -1,0 +1,11 @@
+@import url("./preflight.css");
+@import url("./palette.css");
+@import url("./font-face.css");
+
+body {
+	font-family: "Jost*", Jost, sans-serif;
+}
+
+code {
+	font-family: Iosevka, Monaco, Consolas, "Courier New", monospace;
+}
