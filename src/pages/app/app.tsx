@@ -177,6 +177,8 @@ export default function App() {
 	const keydown = useKeyDownEvent()
 	function onkeyup(event: KeyboardEvent) {
 		event.preventDefault()
+		event.stopPropagation()
+		event.stopImmediatePropagation()
 		if (event.key == "Enter") {
 			guess()
 		}
@@ -380,7 +382,37 @@ export default function App() {
 						levelNames={levelNames}
 					/>
 				</Show>
-				<Show when={!gameState()?.over}>
+				<Show when={gameState()!.over}>
+					<div class="game-over">
+						<small style={{display: "none"}}>#{gameState()!.game}</small>
+						<p>
+							the highest possible score was <strong>{game()!.high}</strong>.
+							you got <strong>{score()}</strong>.
+						</p>
+
+						<div class="answers">
+							<For each={game()?.answers}>
+								{answer => {
+									return (
+										<div
+											classList={{
+												answer: true,
+												got: gameState()!.found.includes(answer),
+											}}>
+											{answer}
+										</div>
+									)
+								}}
+							</For>
+						</div>
+						<p>
+							<a href="/" style={{color: "var(--blue-crayola)"}}>
+								start new game
+							</a>
+						</p>
+					</div>
+				</Show>
+				<Show when={!gameState()!.over}>
 					<div class="guessers">
 						<Guess guess={local.guess} name={local.name} />
 
@@ -454,6 +486,21 @@ export default function App() {
 							</For>
 						</ul>
 					</details>
+
+					<button
+						class="give-up"
+						onClick={() => {
+							const sure = confirm(
+								"are you sure? this will end the game forever for everyone!"
+							)
+							if (sure) {
+								gameHandle()?.change(state => {
+									state.over = true
+								})
+							}
+						}}>
+						give up and see answers
+					</button>
 				</Show>
 			</Show>
 		</main>

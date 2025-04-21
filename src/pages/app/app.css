@@ -140,7 +140,7 @@ body {
 
 .message {
 	position: absolute;
-	top: 80px;
+	top: 150px;
 	left: 50%;
 	translate: -50% 0;
 	font-size: 20px;
@@ -204,7 +204,7 @@ body {
 	display: flex;
 	place-content: center;
 	place-items: center;
-	gap: 1em;
+	gap: 2em;
 	.rank {
 		width: 14ch;
 		height: 4ch;
@@ -276,5 +276,23 @@ body {
 		color: var(--carribean-current);
 		transition: all 0.3s ease-in-out;
 	}
-	padding-bottom: 2em;
+}
+
+.answers {
+	columns: 4 4em;
+	text-align: left;
+	.answer {
+		&.got {
+			font-weight: 600;
+			&::before {
+				content: "✓";
+				color: #17ef3c;
+				margin-right: 0.25em;
+			}
+		}
+	}
+}
+
+.game-over {
+	text-align: left;
 }
