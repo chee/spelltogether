@@ -469,6 +469,9 @@ export default function App() {
 					<details>
 						<summary>found</summary>
 						<ul class="found">
+							<Show when={gameState()?.found?.length === 0}>
+								You haven't found a single word yet. Better get started!
+							</Show>
 							<For each={gameState()?.found?.toReversed()}>
 								{word => (
 									<li>
