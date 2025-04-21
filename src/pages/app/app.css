@@ -288,3 +288,7 @@ body {
 	margin-top: 20em;
 	padding: 4px 8px;
 }
+
+.bloom {
+	scale: 2;
+}

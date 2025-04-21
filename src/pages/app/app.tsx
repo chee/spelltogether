@@ -519,6 +519,17 @@ function Progress(props: {
 
 	const [showing, setShowing] = createSignal(-1)
 
+	const [bloom, setBloom] = createSignal(false)
+
+	createEffect(() => {
+		if (props.score) {
+			setBloom(true)
+			setTimeout(() => {
+				setBloom(false)
+			}, 150)
+		}
+	})
+
 	return (
 		<div class="progress">
 			<h4 class="rank">{levelName()}</h4>
@@ -549,7 +560,12 @@ function Progress(props: {
 						</For>
 					</div>
 				</div>
-				<div class="marker" style={{left: `${percent()}%`}}>
+				<div
+					classList={{
+						marker: true,
+						bloom: bloom(),
+					}}
+					style={{left: `${percent()}%`}}>
 					<span class="score">{props.score}</span>
 				</div>
 			</div>
