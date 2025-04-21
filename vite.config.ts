@@ -1,9 +1,16 @@
 import {defineConfig} from "vite"
 import solid from "vite-plugin-solid"
 import wasm from "vite-plugin-wasm"
+import {VitePWA} from "vite-plugin-pwa"
 
 export default defineConfig({
 	plugins: [
+		VitePWA({
+			registerType: "autoUpdate",
+			devOptions: {
+				enabled: true,
+			},
+		}),
 		solid(),
 		wasm(), // an inline vite plugin to handle .words files importing them as an array of
 		// strings, one for each line
