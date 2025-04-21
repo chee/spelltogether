@@ -10,6 +10,9 @@ export default defineConfig({
 			devOptions: {
 				enabled: true,
 			},
+			workbox: {
+				maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+			},
 		}),
 		solid(),
 		wasm(), // an inline vite plugin to handle .words files importing them as an array of
