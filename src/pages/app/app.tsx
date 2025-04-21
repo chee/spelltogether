@@ -17,13 +17,17 @@ import {createMutable, createStore} from "solid-js/store"
 // thanks to ConorSheehan1 for these
 import games from "../../words/games.json"
 
-const levels = {
-	1: "ok let's go",
-	5: "pretty cool",
-	6: "yay!",
-	7: "omg!!",
-	8: "wow!!! you're amazing owo",
-}
+const levelNames = [
+	"beginner",
+	"ok let's go",
+	"now we're talking",
+	"v nice",
+	"pretty cool",
+	"sick",
+	"yay!",
+	"omg!!",
+	"wow!! you're amazing",
+]
 
 function int() {
 	const a = new Uint32Array(1)
@@ -51,9 +55,13 @@ function createInitialState(): GameState {
 	return GameState.parse({})
 }
 
+function isPangram(word: string) {
+	return new Set(word).size == 7
+}
+
 function scoreWord(word: string): number {
 	if (word.length === 4) return 1
-	if (new Set(word).size == 7) return word.length + 7
+	if (isPangram(word)) return word.length + 7
 	return word.length
 }
 
@@ -356,6 +364,8 @@ export default function App() {
 		)
 	}
 
+	const levels = () => game() && getLevels(game()!)
+
 	return (
 		<main>
 			<h1>spelling chee & spelling zee</h1>
@@ -365,7 +375,13 @@ export default function App() {
 			</div>
 
 			<Show when={game() && gameState()}>
-				<h2>score: {score()}</h2>
+				<Show when={levels()}>
+					<Progress
+						score={score()}
+						levelValues={levels()!}
+						levelNames={levelNames}
+					/>
+				</Show>
 				<Show when={!gameState()?.over}>
 					<div class="guessers">
 						<Guess guess={local.guess} name={local.name} />
@@ -424,13 +440,79 @@ export default function App() {
 					<details>
 						<summary>found</summary>
 						<ul class="found">
-							<For each={gameState()?.found}>
-								{word => <li>{word}</li>}
+							<For each={gameState()?.found?.toReversed()}>
+								{word => (
+									<li>
+										<span
+											classList={{
+												"found-pangram-marker": true,
+												show: isPangram(word),
+											}}>
+											✨
+										</span>
+										<span class="found-score">{scoreWord(word)}</span>
+										<span class="found-word">{word}</span>
+									</li>
+								)}
 							</For>
 						</ul>
 					</details>
 				</Show>
 			</Show>
 		</main>
+	)
+}
+
+function Progress(props: {
+	score: number
+	levelNames: string[]
+	levelValues: number[]
+}) {
+	const progressIndex = () => {
+		return props.levelValues.filter(v => v <= props.score).length - 1
+	}
+	const levelName = () => props.levelNames[progressIndex() ?? 0]
+	const percent = () =>
+		[0, 11.1, 22.2, 33.3, 44.4, 55.6, 66.7, 77.8, 88.9, 99.9][
+			progressIndex() ?? 0
+		]
+
+	const [showing, setShowing] = createSignal(-1)
+
+	return (
+		<div class="progress">
+			<h4 class="rank">{levelName()}</h4>
+			<div class="bar">
+				<div class="line">
+					<div class="dots">
+						<For each={props.levelNames}>
+							{(name, index) => {
+								return (
+									<span
+										class="dot"
+										onClick={() => {
+											setShowing(index())
+											setTimeout(() => {
+												setShowing(-1)
+											}, 100)
+										}}>
+										<span
+											classList={{
+												info: true,
+												show: showing() === index(),
+											}}>
+											{name} ({props.levelValues[index()]})
+										</span>
+									</span>
+								)
+							}}
+						</For>
+					</div>
+				</div>
+				<div class="marker" style={{left: `${percent()}%`}}>
+					<span class="score">{props.score}</span>
+				</div>
+			</div>
+		</div>
 	)
 }
