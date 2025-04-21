@@ -14,8 +14,9 @@ import repo from "../../repo/export.ts"
 import {z} from "zod"
 import {useDocument} from "solid-automerge"
 import {createMutable, createStore} from "solid-js/store"
-// thanks to ConorSheehan1 for these
+// thanks to ConorSheehan1 for these words
 import games from "../../words/games.json"
+import toast, {Toaster, type ToastOptions} from "solid-toast"
 
 const levelNames = [
 	"beginner",
@@ -132,12 +133,12 @@ export default function App() {
 		{repo}
 	)
 
-	const [message, setMessage] = createSignal("")
-	let msgTimeout = setTimeout(() => {})
-	function notify(msg: string) {
-		setMessage(msg)
-		clearTimeout(msgTimeout)
-		msgTimeout = setTimeout(() => setMessage(""), 2000)
+	function notify(msg: string, opts: ToastOptions = {}) {
+		toast(msg, {
+			duration: 1200,
+			position: "top-center",
+			...opts,
+		})
 	}
 
 	const game = () => gameState() && games[gameState()!.game]
@@ -192,9 +193,6 @@ export default function App() {
 		if (key.length !== 1) return false
 		if (!game()) return false
 		return /^[a-z]$/.test(key)
-		// const validLetters = [game()!.centre, ...game()!.edge.split("")]
-		// ret
-		// return validLetters.includes(key)
 	}
 
 	const [localLetter, setLocalLetter] = createSignal("")
@@ -225,17 +223,17 @@ export default function App() {
 		if (result === GuessResult.Early) {
 			notify("game not started yet")
 		} else if (result == GuessResult.Bad) {
-			notify("bad letters")
+			notify("bad letters", {icon: "🙊"})
 		} else if (result === GuessResult.Seen) {
-			notify("already guessed!")
+			notify("already guessed!", {icon: "😳"})
 		} else if (result === GuessResult.Small) {
-			notify("too small")
+			notify("too small", {icon: "🙊"})
 		} else if (result == GuessResult.Without) {
-			notify("where's the centre letter mate?")
+			notify("where's the centre letter mate?", {icon: "🙉"})
 		} else if (result === GuessResult.Absent) {
-			notify("not in word list, sorry :c")
+			notify("not in word list, sorry :c", {icon: "🙈"})
 		} else if (result === GuessResult.Success) {
-			notify("nice! " + scoreWord(guess) + " points")
+			notify("nice! " + scoreWord(guess) + " points", {icon: "😊"})
 			gameHandle()?.change(state => {
 				state.found.push(guess)
 				state.found = Array.from(new Set(state.found))
@@ -370,10 +368,6 @@ export default function App() {
 		<main>
 			<h1>spelling chee & spelling zee</h1>
 
-			<div classList={{message: true, shown: !!message().length}}>
-				{message()}
-			</div>
-
 			<Show when={game() && gameState()}>
 				<Show when={levels()}>
 					<Progress
@@ -506,6 +500,7 @@ export default function App() {
 					</button>
 				</Show>
 			</Show>
+			<Toaster />
 		</main>
 	)
 }
