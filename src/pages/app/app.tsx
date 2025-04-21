@@ -156,9 +156,7 @@ export default function App() {
 		if (!game() || !gameState()) {
 			return GuessResult.Early
 		}
-		if (
-			!new Set(game()!.edge + game()!.centre).isSupersetOf(new Set(guess))
-		) {
+		if (!new Set(game()!.edge + game()!.centre).isSupersetOf(new Set(guess))) {
 			return GuessResult.Bad
 		}
 		if (gameState()?.found?.includes(guess)) {
@@ -305,8 +303,7 @@ export default function App() {
 	})
 
 	const score = () =>
-		gameState()?.found?.reduce((score, word) => score + scoreWord(word), 0) ??
-		0
+		gameState()?.found?.reduce((score, word) => score + scoreWord(word), 0) ?? 0
 
 	const [edge, setEdge] = createSignal(game()?.edge.split("") || [])
 	createEffect(() => {
@@ -429,8 +426,7 @@ export default function App() {
 					</div>
 
 					<div class="buttons">
-						<button
-							onClick={() => (local.guess = local.guess.slice(0, -1))}>
+						<button onClick={() => (local.guess = local.guess.slice(0, -1))}>
 							backspace
 						</button>
 						<button onclick={shuffle}>shuffle</button>
@@ -473,9 +469,7 @@ function Progress(props: {
 	}
 	const levelName = () => props.levelNames[progressIndex() ?? 0]
 	const percent = () =>
-		[0, 11.1, 22.2, 33.3, 44.4, 55.6, 66.7, 77.8, 88.9, 99.9][
-			progressIndex() ?? 0
-		]
+		[0, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100][progressIndex() ?? 0]
 
 	const [showing, setShowing] = createSignal(-1)
 
