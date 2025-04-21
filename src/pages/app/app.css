@@ -296,3 +296,14 @@ body {
 .game-over {
 	text-align: left;
 }
+
+.give-up {
+	background: black;
+	color: white;
+	border: 0;
+	&:hover {
+		background: red;
+	}
+	margin-top: 20em;
+	padding: 4px 8px;
+}
