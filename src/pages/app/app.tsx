@@ -271,6 +271,7 @@ export default function App() {
 				setTimeout(() => {
 					remote[message.name].letter = ""
 				}, 200)
+				return
 			}
 			if (message.guess != null) {
 				const prior = remote[message.name]
@@ -278,6 +279,14 @@ export default function App() {
 					letter: prior?.letter ?? "",
 					name: message.name,
 					guess: message.guess,
+				}
+				return
+			}
+			if (message.name != null) {
+				remote[message.name] = {
+					letter: "",
+					name: message.name,
+					guess: "",
 				}
 			}
 		}
