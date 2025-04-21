@@ -233,6 +233,7 @@ export default function App() {
 		} else if (result === GuessResult.Absent) {
 			notify("not in word list, sorry :c")
 		} else if (result === GuessResult.Success) {
+			notify("nice! " + scoreWord(guess) + " points")
 			gameHandle()?.change(state => {
 				state.found.push(guess)
 				state.found = Array.from(new Set(state.found))
