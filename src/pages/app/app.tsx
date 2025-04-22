@@ -119,6 +119,24 @@ type RemoteState = {
 
 const remote: RemoteState = createMutable({})
 
+function favicon(kind: "default" | "typing" = "default") {
+	// Ensure we have access to the document, i.e. we are in the browser.
+	if (typeof window === "undefined") return
+
+	const link: HTMLLinkElement =
+		window.document.querySelector("link[rel*='icon']") ||
+		window.document.createElement("link")
+	link.type = "image/svg+xml"
+	link.rel = "shortcut icon"
+	if (kind === "default") {
+		link.href = `/favicon.svg`
+	} else {
+		link.href = `/favicon.${kind}.svg`
+	}
+
+	window.document.getElementsByTagName("head")[0].appendChild(link)
+}
+
 export default function App() {
 	const [gameState, gameHandle] = useDocument<GameState>(
 		() => {
@@ -262,6 +280,8 @@ export default function App() {
 		})
 	})
 
+	let isTypingTimeout = setTimeout(() => {}, 0)
+
 	createEffect(() => {
 		function handleMessage({
 			message,
@@ -278,6 +298,14 @@ export default function App() {
 				setTimeout(() => {
 					remote[message.name].letter = ""
 				}, 200)
+
+				clearTimeout(isTypingTimeout)
+				document.title = `${message.name} is typing...`
+				favicon("typing")
+				isTypingTimeout = setTimeout(() => {
+					document.title = "spelltogether"
+					favicon("default")
+				}, 300)
 				return
 			}
 			if (message.guess != null) {
