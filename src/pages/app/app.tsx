@@ -71,7 +71,7 @@ export default function App() {
 				return hash
 			}
 			const url = repo.create(createInitialState()).url
-			loc.hash = url
+			location.hash = url
 			return url
 		},
 		{repo}
