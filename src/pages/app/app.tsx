@@ -17,6 +17,35 @@ import {createMutable, createStore} from "solid-js/store"
 // thanks to ConorSheehan1 for these words
 import games from "../../words/games.json"
 import toast, {Toaster, type ToastOptions} from "solid-toast"
+import confetti from "canvas-confetti"
+
+const confettiConfig = {
+	spread: 360,
+	ticks: 50,
+	gravity: 0,
+	decay: 0.94,
+	startVelocity: 30,
+}
+
+function celebrate(
+	colors: string[] = ["FFE400", "FFBD00", "E89400", "ff7faa", "ffec1a"]
+) {
+	confetti({
+		...confettiConfig,
+		particleCount: 40,
+		scalar: 1.2,
+		shapes: ["star"],
+		colors,
+	})
+
+	confetti({
+		...confettiConfig,
+		particleCount: 10,
+		scalar: 0.75,
+		shapes: ["circle"],
+		colors,
+	})
+}
 
 const levelNames = [
 	"beginner",
@@ -151,6 +180,8 @@ export default function App() {
 		{repo}
 	)
 
+	const [particlesReady, setParticlesReady] = createSignal(false)
+
 	function notify(msg: string, opts: ToastOptions = {}) {
 		toast(msg, {
 			duration: 1200,
@@ -251,7 +282,21 @@ export default function App() {
 		} else if (result === GuessResult.Absent) {
 			notify("not in word list, sorry :c", {icon: "🙈"})
 		} else if (result === GuessResult.Success) {
-			notify("nice! " + scoreWord(guess) + " points", {icon: "😊"})
+			const score = scoreWord(guess)
+			if (isPangram(guess)) {
+				notify("PANGRAM!!! " + score + " points", {icon: "🤩"})
+				setTimeout(celebrate)
+				setTimeout(celebrate, 100)
+				setTimeout(celebrate, 200)
+			} else if (guess.length > 7) {
+				notify("yummy! " + score + " points", {icon: "😋"})
+			} else if (guess.length > 4) {
+				notify("nice! " + score + " points", {icon: "😊"})
+			} else if (score == 1) {
+				notify("1 point", {icon: "😃"})
+			} else {
+				notify("nice. " + score + " points", {icon: "😌"})
+			}
 			gameHandle()?.change(state => {
 				state.found.push(guess)
 				state.found = Array.from(new Set(state.found))
@@ -402,6 +447,7 @@ export default function App() {
 						score={score()}
 						levelValues={levels()!}
 						levelNames={levelNames}
+						high={game()!.high}
 					/>
 				</Show>
 				<Show when={gameState()!.over}>
@@ -450,7 +496,10 @@ export default function App() {
 						<For each={letters()}>
 							{(letter, index) => (
 								<span
-									onClick={() => insert(letter)}
+									onClick={event => {
+										insert(letter)
+										event.target.blur()
+									}}
 									classList={{
 										letter: true,
 										centre: letter === centre(),
@@ -481,14 +530,30 @@ export default function App() {
 					</div>
 
 					<div class="buttons">
-						<button onClick={() => (local.guess = local.guess.slice(0, -1))}>
+						<button
+							onClick={event => {
+								local.guess = local.guess.slice(0, -1)
+								event.target.blur()
+							}}>
 							backspace
 						</button>
-						<button onclick={shuffle}>shuffle</button>
-						<button onClick={guess}>guess</button>
+						<button
+							onclick={event => {
+								shuffle()
+								event.target.blur()
+							}}>
+							shuffle
+						</button>
+						<button
+							onClick={event => {
+								guess()
+								event.target.blur()
+							}}>
+							guess
+						</button>
 					</div>
 
-					<details>
+					<details onClick={event => event.target.blur()}>
 						<summary>found</summary>
 						<ul class="found">
 							<Show when={gameState()?.found?.length === 0}>
@@ -514,7 +579,7 @@ export default function App() {
 
 					<button
 						class="give-up"
-						onClick={() => {
+						onClick={event => {
 							const sure = confirm(
 								"are you sure? this will end the game forever for everyone!"
 							)
@@ -523,6 +588,7 @@ export default function App() {
 									state.over = true
 								})
 							}
+							event.target.blur()
 						}}>
 						give up and see answers
 					</button>
@@ -537,6 +603,7 @@ function Progress(props: {
 	score: number
 	levelNames: string[]
 	levelValues: number[]
+	high: number
 }) {
 	const progressIndex = () => {
 		return props.levelValues.filter(v => v <= props.score).length - 1
@@ -558,6 +625,27 @@ function Progress(props: {
 		}
 	})
 
+	createEffect(() => {
+		if (percent() == 100) {
+			celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
+		}
+		if (props.score == props.high) {
+			setTimeout(() => {
+				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
+			})
+			celebrate()
+			setTimeout(celebrate, 250)
+			setTimeout(celebrate, 500)
+			setTimeout(celebrate, 750)
+			setInterval(() => {
+				celebrate(["ffff00"])
+				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
+				setTimeout(() => celebrate(["ffff00"]), 500)
+				setTimeout(() => celebrate(["00ffff"]), 750)
+			}, 1000)
+		}
+	})
+
 	return (
 		<div class="progress">
 			<h4 class="rank">{levelName()}</h4>
@@ -567,13 +655,14 @@ function Progress(props: {
 						<For each={props.levelNames}>
 							{(name, index) => {
 								return (
-									<span
+									<button
 										class="dot"
-										onClick={() => {
+										onClick={event => {
 											setShowing(index())
 											setTimeout(() => {
 												setShowing(-1)
 											}, 100)
+											event.target.blur()
 										}}>
 										<span
 											classList={{
@@ -582,7 +671,7 @@ function Progress(props: {
 											}}>
 											{name} ({props.levelValues[index()]})
 										</span>
-									</span>
+									</button>
 								)
 							}}
 						</For>
@@ -597,6 +686,11 @@ function Progress(props: {
 					<span class="score">{props.score}</span>
 				</div>
 			</div>
+			<Show when={percent() == 100}>
+				<div style={{"white-space": "nowrap", "font-size": "12px"}}>
+					(max: {props.high})
+				</div>
+			</Show>
 		</div>
 	)
 }

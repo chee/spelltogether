@@ -94,7 +94,7 @@ body {
 .guess {
 	display: block;
 	position: relative;
-	min-height: 1em;
+	height: 1em;
 
 	&.remote {
 		color: var(--remote-color);
@@ -187,7 +187,7 @@ body {
 	place-items: center;
 	gap: 2em;
 	.rank {
-		width: 14ch;
+		width: 18ch;
 		height: 4ch;
 		display: flex;
 		place-content: center;
@@ -217,6 +217,8 @@ body {
 		border-radius: 50%;
 		background: var(--carribean-current);
 		translate: 0 -3px;
+		appearance: none;
+		border: 0;
 
 		.info {
 			background: white;
