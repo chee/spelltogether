@@ -352,6 +352,37 @@ export default function App() {
 
 	const levels = () => game() && getLevels(game()!)
 
+	const progressIndex = () => {
+		return (levels()?.filter(v => v <= (score() ?? 0)).length ?? 0) - 1
+	}
+
+	createEffect(() => {
+		const complete = () => progressIndex() == 8
+		if (complete()) {
+			celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
+		}
+
+		if (complete() && gameState()?.found?.some(isPangram)) {
+			setTimeout(() => {
+				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
+			})
+			celebrate()
+			setTimeout(celebrate, 250)
+			setTimeout(celebrate, 500)
+			setTimeout(celebrate, 750)
+			setInterval(() => {
+				celebrate(["ffff00"])
+				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
+				setTimeout(() => celebrate(["ffff00"]), 500)
+				setTimeout(() => celebrate(["00ffff"]), 750)
+			}, 1000)
+		}
+
+		if (score() === game()?.high) {
+			gameHandle()?.change(state => (state.over = true))
+		}
+	})
+
 	return (
 		<main>
 			<h1>spelling chee & spelling zee</h1>

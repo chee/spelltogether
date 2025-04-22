@@ -1,5 +1,4 @@
 import {createEffect, createSignal, For, Show} from "solid-js"
-import {celebrate} from "./lib.ts"
 import "./progress.css"
 
 export default function Progress(props: {
@@ -25,27 +24,6 @@ export default function Progress(props: {
 			setTimeout(() => {
 				setBloom(false)
 			}, 150)
-		}
-	})
-
-	createEffect(() => {
-		if (percent() == 100) {
-			celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
-		}
-		if (props.score == props.high) {
-			setTimeout(() => {
-				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
-			})
-			celebrate()
-			setTimeout(celebrate, 250)
-			setTimeout(celebrate, 500)
-			setTimeout(celebrate, 750)
-			setInterval(() => {
-				celebrate(["ffff00"])
-				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
-				setTimeout(() => celebrate(["ffff00"]), 500)
-				setTimeout(() => celebrate(["00ffff"]), 750)
-			}, 1000)
 		}
 	})
 
