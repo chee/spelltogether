@@ -1,5 +1,21 @@
 /* @refresh reload */
+import {Router} from "@solidjs/router"
+import {lazy} from "solid-js"
 import {render} from "solid-js/web"
-import App from "./pages/app/app.tsx"
+
 const app = document.getElementById("app")
-render(() => <App />, app!)
+
+render(
+	() => (
+		<Router>
+			{[
+				{path: "/", component: lazy(() => import("./pages/app/app.tsx"))},
+				{
+					path: "/games",
+					component: lazy(() => import("./pages/games/games.tsx")),
+				},
+			]}
+		</Router>
+	),
+	app!
+)

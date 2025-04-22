@@ -1,0 +1,32 @@
+main {
+	width: 90vw;
+	max-width: 500px;
+}
+
+.game-letters {
+	border: 2px solid;
+	font-size: 2em;
+	text-decoration: none;
+	color: black;
+	.centre {
+		background: var(--centre-color);
+		color: black;
+	}
+	&:hover {
+		text-decoration: underline;
+		color: blue;
+	}
+}
+
+article {
+	padding-bottom: 4em;
+	border-bottom: 1px solid;
+	margin-bottom: 4em;
+	&.over {
+		opacity: 0.5;
+	}
+}
+
+h1 {
+	margin-bottom: 2em;
+}

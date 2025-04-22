@@ -4,149 +4,37 @@ import {
 	For,
 	onCleanup,
 	Show,
-	Suspense,
 	untrack,
 } from "solid-js"
 import "./app.css"
 import {useKeyDownEvent} from "@solid-primitives/keyboard"
 import {isValidAutomergeUrl} from "@automerge/automerge-repo"
 import repo from "../../repo/export.ts"
-import {z} from "zod"
 import {useDocument} from "solid-automerge"
-import {createMutable, createStore} from "solid-js/store"
+import {createMutable} from "solid-js/store"
 // thanks to ConorSheehan1 for these words
 import games from "../../words/games.json"
 import toast, {Toaster, type ToastOptions} from "solid-toast"
-import confetti from "canvas-confetti"
-
-const confettiConfig = {
-	spread: 360,
-	ticks: 50,
-	gravity: 0,
-	decay: 0.94,
-	startVelocity: 30,
-}
-
-function celebrate(
-	colors: string[] = ["FFE400", "FFBD00", "E89400", "ff7faa", "ffec1a"]
-) {
-	confetti({
-		...confettiConfig,
-		particleCount: 40,
-		scalar: 1.2,
-		shapes: ["star"],
-		colors,
-	})
-
-	confetti({
-		...confettiConfig,
-		particleCount: 10,
-		scalar: 0.75,
-		shapes: ["circle"],
-		colors,
-	})
-}
-
-const levelNames = [
-	"beginner",
-	"ok let's go",
-	"now we're talking",
-	"v nice",
-	"pretty cool",
-	"sick",
-	"yay!",
-	"omg!!",
-	"wow!! you're amazing",
-]
-
-function int() {
-	const a = new Uint32Array(1)
-	window.crypto.getRandomValues(a)
-	return a[0]
-}
-
-const GameState = z.object({
-	found: z.string().array().default([]),
-	game: z
-		.number()
-		.default(() => Math.floor(lerp(0, gamesLength - 1, int() / 0xffffffff))),
-	over: z.boolean().default(false),
-})
-
-function lerp(a: number, b: number, t: number) {
-	return a + (b - a) * t
-}
-
-const gamesLength = games.length
-
-type GameState = z.infer<typeof GameState>
+import {
+	celebrate,
+	GameState,
+	getLevels,
+	isPangram,
+	levelNames,
+	scoreGame,
+	scoreWord,
+} from "../../lib.ts"
+import Progress from "../../progress.tsx"
+import {useLocation} from "@solidjs/router"
 
 function createInitialState(): GameState {
 	return GameState.parse({})
-}
-
-function isPangram(word: string) {
-	return new Set(word).size == 7
-}
-
-function scoreWord(word: string): number {
-	if (word.length === 4) return 1
-	if (isPangram(word)) return word.length + 7
-	return word.length
-}
-
-function inkedup(items: number[]): number[] {
-	const seen = new Set()
-	return items.map(num => {
-		while (seen.has(num)) {
-			num += 1
-		}
-		seen.add(num)
-		return num
-	})
-}
-
-type SingleGame = (typeof games)[number]
-
-function getLevels(game: SingleGame): Array<number> {
-	let levels = [
-		0,
-		5,
-		Math.floor(game.high * 0.1),
-		Math.floor(game.high * 0.2),
-		Math.floor(game.high * 0.3),
-		Math.floor(game.high * 0.4),
-		Math.floor(game.high * 0.5),
-		Math.floor(game.high * 0.55),
-		Math.floor(game.high * 0.6),
-	].sort((a, b) => a - b)
-	levels = inkedup(levels)
-	const min = Math.min(...levels)
-	return levels.map((l: number) => l - min)
 }
 
 interface LocalState {
 	guess: string
 	name: string
 }
-
-let name = localStorage.getItem("name")
-
-while (!name) {
-	name = prompt("what's your name?")
-}
-localStorage.setItem("name", name)
-
-const local: LocalState = createMutable({
-	guess: "",
-	name,
-})
-
-type RemoteState = {
-	[name: string]: {guess: string; letter: string; name: string}
-}
-
-const remote: RemoteState = createMutable({})
 
 function favicon(kind: "default" | "typing" = "default") {
 	// Ensure we have access to the document, i.e. we are in the browser.
@@ -167,20 +55,48 @@ function favicon(kind: "default" | "typing" = "default") {
 }
 
 export default function App() {
+	let name = localStorage.getItem("name")
+
+	while (!name) {
+		name = prompt("what's your name?")
+	}
+	localStorage.setItem("name", name)
+
+	const loc = useLocation()
+
 	const [gameState, gameHandle] = useDocument<GameState>(
 		() => {
-			const hash = location.hash.slice(1)
+			const hash = loc.hash.slice(1)
 			if (isValidAutomergeUrl(hash)) {
 				return hash
 			}
 			const url = repo.create(createInitialState()).url
-			location.hash = url
+			loc.hash = url
 			return url
 		},
 		{repo}
 	)
 
-	const [particlesReady, setParticlesReady] = createSignal(false)
+	const local: LocalState = createMutable({
+		guess: "",
+		name,
+	})
+
+	type RemoteState = {
+		[name: string]: {guess: string; letter: string; name: string}
+	}
+
+	const remote: RemoteState = createMutable({})
+
+	createEffect(() => {
+		const url = gameHandle()?.url
+		const seen = JSON.parse(localStorage.getItem("seen") ?? "[]")
+		seen.unshift(url)
+		localStorage.setItem(
+			"seen",
+			JSON.stringify(Array.from(new Set(seen)).filter(Boolean))
+		)
+	})
 
 	function notify(msg: string, opts: ToastOptions = {}) {
 		toast(msg, {
@@ -376,8 +292,7 @@ export default function App() {
 		})
 	})
 
-	const score = () =>
-		gameState()?.found?.reduce((score, word) => score + scoreWord(word), 0) ?? 0
+	const score = () => gameState() && scoreGame(gameState()!)
 
 	const [edge, setEdge] = createSignal(game()?.edge.split("") || [])
 	createEffect(() => {
@@ -596,101 +511,5 @@ export default function App() {
 			</Show>
 			<Toaster />
 		</main>
-	)
-}
-
-function Progress(props: {
-	score: number
-	levelNames: string[]
-	levelValues: number[]
-	high: number
-}) {
-	const progressIndex = () => {
-		return props.levelValues.filter(v => v <= props.score).length - 1
-	}
-	const levelName = () => props.levelNames[progressIndex() ?? 0]
-	const percent = () =>
-		[0, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100][progressIndex() ?? 0]
-
-	const [showing, setShowing] = createSignal(-1)
-
-	const [bloom, setBloom] = createSignal(false)
-
-	createEffect(() => {
-		if (props.score) {
-			setBloom(true)
-			setTimeout(() => {
-				setBloom(false)
-			}, 150)
-		}
-	})
-
-	createEffect(() => {
-		if (percent() == 100) {
-			celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
-		}
-		if (props.score == props.high) {
-			setTimeout(() => {
-				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
-			})
-			celebrate()
-			setTimeout(celebrate, 250)
-			setTimeout(celebrate, 500)
-			setTimeout(celebrate, 750)
-			setInterval(() => {
-				celebrate(["ffff00"])
-				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
-				setTimeout(() => celebrate(["ffff00"]), 500)
-				setTimeout(() => celebrate(["00ffff"]), 750)
-			}, 1000)
-		}
-	})
-
-	return (
-		<div class="progress">
-			<h4 class="rank">{levelName()}</h4>
-			<div class="bar">
-				<div class="line">
-					<div class="dots">
-						<For each={props.levelNames}>
-							{(name, index) => {
-								return (
-									<button
-										class="dot"
-										onClick={event => {
-											setShowing(index())
-											setTimeout(() => {
-												setShowing(-1)
-											}, 100)
-											event.target.blur()
-										}}>
-										<span
-											classList={{
-												info: true,
-												show: showing() === index(),
-											}}>
-											{name} ({props.levelValues[index()]})
-										</span>
-									</button>
-								)
-							}}
-						</For>
-					</div>
-				</div>
-				<div
-					classList={{
-						marker: true,
-						bloom: bloom(),
-					}}
-					style={{left: `${percent()}%`}}>
-					<span class="score">{props.score}</span>
-				</div>
-			</div>
-			<Show when={percent() == 100}>
-				<div style={{"white-space": "nowrap", "font-size": "12px"}}>
-					(max: {props.high})
-				</div>
-			</Show>
-		</div>
 	)
 }
