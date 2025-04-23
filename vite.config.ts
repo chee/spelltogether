@@ -2,6 +2,7 @@ import {defineConfig} from "vite"
 import solid from "vite-plugin-solid"
 import wasm from "vite-plugin-wasm"
 import {VitePWA} from "vite-plugin-pwa"
+import autoprefixer from "autoprefixer"
 
 export default defineConfig({
 	plugins: [
@@ -38,4 +39,9 @@ export default defineConfig({
 	],
 	server: {port: 1234},
 	build: {target: "esnext"},
+	css: {
+		postcss: {
+			plugins: [autoprefixer({})],
+		},
+	},
 })

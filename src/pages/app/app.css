@@ -19,6 +19,8 @@
 	svg {
 		height: var(--letter-box-size);
 		width: var(--letter-box-size);
+		touch-action: manipulation !important;
+		user-select: none;
 		polygon {
 			fill: white;
 			transition: fill 0.5;
@@ -45,6 +47,8 @@
 			fill: black;
 			font-size: var(--letter-size);
 			font-weight: 500;
+			touch-action: manipulation !important;
+			user-select: none;
 		}
 	}
 	&.letter-1 {
