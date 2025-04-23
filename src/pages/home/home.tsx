@@ -23,7 +23,7 @@ export default function Home() {
 								if (isValidAutomergeUrl(url)) {
 									nav("/play/#" + url)
 								} else if (url.startsWith("https://")) {
-									nav(url)
+									location.href = url
 								}
 							}
 							throw ""

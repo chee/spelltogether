@@ -25,7 +25,7 @@ import {
 	scoreWord,
 } from "../../lib.ts"
 import Progress from "../../progress.tsx"
-import {useLocation} from "@solidjs/router"
+import {A, useLocation, useNavigate} from "@solidjs/router"
 
 function createInitialState(): GameState {
 	return GameState.parse({})
@@ -55,6 +55,7 @@ function favicon(kind: "default" | "typing" = "default") {
 }
 
 export default function App() {
+	const nav = useNavigate()
 	let name = localStorage.getItem("name")
 
 	while (!name) {
@@ -66,12 +67,13 @@ export default function App() {
 
 	const [gameState, gameHandle] = useDocument<GameState>(
 		() => {
+			console.log(loc.pathname)
 			const hash = loc.hash.slice(1)
 			if (isValidAutomergeUrl(hash)) {
 				return hash
 			}
 			const url = repo.create(createInitialState()).url
-			location.hash = url
+			nav("/play/#" + url)
 			return url
 		},
 		{repo}
@@ -532,6 +534,15 @@ export default function App() {
 						}}>
 						copy url
 					</button>
+					<a
+						href="/"
+						style={{display: "block"}}
+						onClick={() => {
+							location.hash = ""
+							nav("/", {replace: true})
+						}}>
+						go to front page
+					</a>
 
 					<button
 						class="give-up"

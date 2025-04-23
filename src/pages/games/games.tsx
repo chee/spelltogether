@@ -77,6 +77,15 @@ export default function Games() {
 					)
 				}}
 			</For>
+			<a
+				href="/"
+				style={{display: "block"}}
+				onClick={() => {
+					location.hash = ""
+					nav("/", {replace: true})
+				}}>
+				go to front page
+			</a>
 		</main>
 	)
 }

@@ -33,3 +33,7 @@ body {
 	touch-action: manipulation;
 	user-select: none;
 }
+
+a {
+	color: var(--blue-crayola);
+}
