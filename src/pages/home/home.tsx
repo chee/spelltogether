@@ -10,10 +10,6 @@ export default function Home() {
 	return (
 		<main>
 			<h1>Spelltogether</h1>
-			<p>
-				Spelltogether is a multiplayer word game where you can play with your
-				friends or against the computer.
-			</p>
 			<img src="/favicon.svg" alt=""></img>
 			<p>
 				<button
