@@ -3,6 +3,7 @@
 	place-content: center;
 	place-items: center;
 	gap: 2em;
+
 	.rank {
 		width: 18ch;
 		height: 4ch;
@@ -18,6 +19,13 @@
 	.bar {
 		position: relative;
 		width: 100%;
+	}
+	@media (max-width: 500px) {
+		flex-direction: column-reverse;
+
+		.bar {
+			width: 80%;
+		}
 	}
 	.line {
 		height: 2px;
@@ -36,6 +44,8 @@
 		translate: 0 -3px;
 		appearance: none;
 		border: 0;
+		margin: 0;
+		padding: 0;
 
 		.info {
 			background: white;

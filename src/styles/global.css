@@ -31,4 +31,5 @@ body {
 	scrollbar-color: var(--scrollbar-bg) var(--scrollbar-fg);
 	/* disable tappy zoom */
 	touch-action: manipulation;
+	user-select: none;
 }
