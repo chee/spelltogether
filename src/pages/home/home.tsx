@@ -24,9 +24,12 @@ export default function Home() {
 									nav("/play/#" + url)
 								} else if (url.startsWith("https://")) {
 									location.href = url
+								} else {
+									throw ""
 								}
+							} else {
+								throw ""
 							}
-							throw ""
 						} catch {
 							alert("please...! enter the url!")
 						}
