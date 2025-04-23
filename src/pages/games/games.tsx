@@ -32,7 +32,7 @@ export default function Games() {
 				{([gameState, handle]) => {
 					const game = () => games[gameState()?.game ?? 0]
 
-					const url = () => "/#" + handle()?.url
+					const url = () => "/play/#" + handle()?.url
 					const time = () => new Date((handle()?.metadata()?.time ?? 0) * 1000)
 
 					return (

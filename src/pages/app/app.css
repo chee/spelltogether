@@ -136,6 +136,7 @@
 	border: 1px solid;
 	gap: 1em;
 	padding: 1em;
+	margin-bottom: 2em;
 }
 
 .found li {
@@ -194,4 +195,15 @@
 
 .bloom {
 	scale: 2;
+}
+
+.copy {
+	margin: 2em auto;
+	display: block;
+	padding: 4px 8px;
+	background: var(--blue-crayola);
+	color: white;
+	border: 0;
+	border-radius: 16px;
+	cursor: pointer;
 }

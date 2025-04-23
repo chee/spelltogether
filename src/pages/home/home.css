@@ -1,0 +1,10 @@
+.join {
+	margin: 2em auto;
+	display: block;
+	padding: 4px 8px;
+	background: var(--blue-crayola);
+	color: white;
+	border: 0;
+	border-radius: 16px;
+	cursor: pointer;
+}

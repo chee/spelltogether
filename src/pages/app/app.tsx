@@ -420,7 +420,7 @@ export default function App() {
 							</For>
 						</div>
 						<p>
-							<a href="/" style={{color: "var(--blue-crayola)"}}>
+							<a href="/play" style={{color: "var(--blue-crayola)"}}>
 								start new game
 							</a>
 						</p>
@@ -522,6 +522,16 @@ export default function App() {
 							</For>
 						</ul>
 					</details>
+
+					<button
+						class="copy"
+						onClick={event => {
+							navigator.clipboard.writeText(location.href)
+							notify("copied to clipboard", {icon: "📋"})
+							event.target.blur()
+						}}>
+						copy url
+					</button>
 
 					<button
 						class="give-up"

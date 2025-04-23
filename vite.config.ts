@@ -13,6 +13,12 @@ export default defineConfig({
 			workbox: {
 				maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
 			},
+			manifest: {
+				name: "Spelltogether",
+				short_name: "Spelltogether",
+				description: "A multiplayer word game",
+				theme_color: "#00FDBC",
+			},
 		}),
 		solid(),
 		wasm(), // an inline vite plugin to handle .words files importing them as an array of

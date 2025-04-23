@@ -9,7 +9,8 @@ render(
 	() => (
 		<Router>
 			{[
-				{path: "/", component: lazy(() => import("./pages/app/app.tsx"))},
+				{path: "/", component: lazy(() => import("./pages/home/home.tsx"))},
+				{path: "/play", component: lazy(() => import("./pages/app/app.tsx"))},
 				{
 					path: "/games",
 					component: lazy(() => import("./pages/games/games.tsx")),
