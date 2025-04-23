@@ -67,7 +67,6 @@ export default function App() {
 
 	const [gameState, gameHandle] = useDocument<GameState>(
 		() => {
-			console.log(loc.pathname)
 			const hash = loc.hash.slice(1)
 			if (isValidAutomergeUrl(hash)) {
 				return hash
