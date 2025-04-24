@@ -30,7 +30,7 @@ body {
 	overscroll-behavior: none;
 	scrollbar-color: var(--scrollbar-bg) var(--scrollbar-fg);
 	/* disable tappy zoom */
-	touch-action: none !important;
+	touch-action: manipulation;
 	user-select: none;
 	-webkit-user-select: none;
 }

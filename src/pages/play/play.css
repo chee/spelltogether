@@ -25,10 +25,7 @@
 	svg {
 		height: var(--letter-box-size);
 		width: var(--letter-box-size);
-		touch-action: none;
-		* {
-			touch-action: none;
-		}
+		touch-action: manipulation;
 		user-select: none;
 		polygon {
 			fill: white;
@@ -56,7 +53,7 @@
 			fill: black;
 			font-size: var(--letter-size);
 			font-weight: 500;
-			touch-action: none;
+			touch-action: manipulation;
 			user-select: none;
 		}
 	}

@@ -504,7 +504,7 @@ export default function App() {
 							<For each={letters()}>
 								{(letter, index) => (
 									<span
-										onClick={event => {
+										on:click={event => {
 											insert(letter)
 											event.target.blur()
 										}}
@@ -515,20 +515,28 @@ export default function App() {
 											local: letter === localLetter(),
 											["letter-" + index()]: true,
 										}}>
-										<svg viewBox="0 0 120 104">
+										<svg viewBox="0 0 120 104" on:click={() => {}}>
 											<polygon
+												on:click={() => {}}
 												class="hexagon remote"
 												points="0,52 30,0 90,0 120,52 90,104 30,104"></polygon>
 
 											<polygon
+												on:click={() => {}}
 												class="hexagon local"
 												points="4,52 32.4,4 87.6,4 116,52 87.6,100 32.4,100"></polygon>
 
 											<polygon
+												on:click={() => {}}
 												class="hexagon inner"
 												points="8,52 34.8,8 85.2,8 112,52 85.2,96 34.8,96"></polygon>
 
-											<text class="cell-letter" x="50" y="25" dy="1em">
+											<text
+												class="cell-letter"
+												x="50"
+												y="25"
+												dy="1em"
+												on:click={() => {}}>
 												{letter}
 											</text>
 										</svg>
