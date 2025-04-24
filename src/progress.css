@@ -55,18 +55,17 @@
 			color: var(--carribean-current);
 			box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 			padding: 4px 8px;
-			font-size: 14px;
-			white-space: nowrap;
 			display: none;
 			position: relative;
 			top: -2em;
 			left: -50%;
 			translate: -50% -50%;
+			width: 8em;
+			white-space: wrap;
 		}
 		&:hover .info,
 		&:focus .info {
-			display: inline;
-			white-space: nowrap;
+			display: block;
 		}
 	}
 	.marker {

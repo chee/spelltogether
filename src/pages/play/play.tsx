@@ -155,7 +155,7 @@ export default function App() {
 	createEffect(() => {
 		if (localLetter() === "") return
 		gameHandle()?.broadcast({letter: localLetter(), name})
-		setTimeout(() => setLocalLetter(""), 200)
+		setTimeout(() => setLocalLetter(""), 80)
 	})
 
 	function insert(letter: string) {
@@ -506,7 +506,7 @@ export default function App() {
 							<For each={letters()}>
 								{(letter, index) => (
 									<span
-										on:click={event => {
+										on:mousedown={event => {
 											if (!IS_BASICALLY_A_PHONE) {
 												insert(letter)
 											}
@@ -556,28 +556,39 @@ export default function App() {
 
 						<div class="buttons">
 							<button
-								on:click={event => {
+								on:mousedown={event => {
 									if (!IS_BASICALLY_A_PHONE) {
 										local.guess = local.guess.slice(0, -1)
 									}
-									event.target.blur()
+									event.target?.blur()
 								}}
 								onTouchStart={() => {
 									if (IS_BASICALLY_A_PHONE) {
 										local.guess = local.guess.slice(0, -1)
 									}
 								}}>
-								backspace
+								Delete
 							</button>
 							<button
-								onclick={event => {
+								onmousedown={event => {
 									shuffle()
 									event.target.blur()
 								}}>
-								shuffle
+								<svg width="1em" height="1em" viewBox="0 0 24 24">
+									<g
+										fill="none"
+										stroke="currentColor"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2">
+										<path d="m18 4l3 3l-3 3m0 10l3-3l-3-3" />
+										<path d="M3 7h3a5 5 0 0 1 5 5a5 5 0 0 0 5 5h5" />
+										<path d="M3 17h3a5 5 0 0 0 5-5a5 5 0 0 1 5-5h5" />
+									</g>
+								</svg>
 							</button>
 							<button
-								on:click={event => {
+								on:mousedown={event => {
 									if (!IS_BASICALLY_A_PHONE) {
 										guess()
 									}
@@ -588,7 +599,7 @@ export default function App() {
 										guess()
 									}
 								}}>
-								guess
+								Guess
 							</button>
 						</div>
 					</Show>

@@ -121,11 +121,16 @@
 	place-content: center;
 	place-items: center;
 	button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		background: white;
-		padding: 12px;
-		border: 1px solid;
-		border-radius: 40px;
-		font-size: 1rem;
+		padding: 8px 16px;
+		border: 1px solid #cdd;
+		border-radius: 2px;
+		font-size: 1.2rem;
+		height: 2.4em;
+		border-radius: 100px;
 		&:active {
 			background: #f7f7f7;
 		}
@@ -264,7 +269,7 @@
 	font-size: 16px;
 	transition: 250ms background-color;
 	border: 1px solid black;
-	border-color: #ccc;
+	border-color: #cccfcf;
 	background: white;
 	color: black;
 	margin: auto;
@@ -279,7 +284,7 @@
 	position: relative;
 	&:empty::before {
 		content: "Your found words...";
-		color: #ccc;
+		color: #cccccc;
 	}
 	&:hover {
 		outline: 2px solid black;
