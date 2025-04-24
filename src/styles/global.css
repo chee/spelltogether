@@ -16,7 +16,7 @@ body {
 	--remote-color: var(--carribean-current);
 	--local-color: var(--blue-crayola);
 	--centre-color: var(--sunglow);
-	--letter-box-size: 80px;
+	--letter-box-size: 120px;
 	--letter-size: 40px;
 	display: flex;
 	flex-direction: column;

@@ -10,8 +10,9 @@
 	flex-direction: row;
 	gap: 1em;
 	position: relative;
-	height: 200px;
-	width: 200px;
+	height: calc(var(--letter-box-size) * 2.5);
+	width: calc(var(--letter-box-size) * 2.5);
+
 	margin: auto;
 	padding-bottom: 2em;
 }
@@ -78,7 +79,7 @@
 }
 
 .guessers {
-	min-height: 4em;
+	min-height: 2.4em;
 	font-size: 1.2em;
 }
 
@@ -109,7 +110,7 @@
 		border-radius: 12px;
 		padding: 2px 4px;
 		position: absolute;
-		left: 0;
+		left: 1rem;
 	}
 }
 
@@ -123,7 +124,8 @@
 		background: white;
 		padding: 12px;
 		border: 1px solid;
-		border-radius: 20px;
+		border-radius: 40px;
+		font-size: 1rem;
 		&:active {
 			background: #f7f7f7;
 		}
@@ -197,6 +199,7 @@
 	position: fixed;
 	right: 1rem;
 	top: 1rem;
+	z-index: 100;
 	span {
 		width: 0;
 		height: 0;
@@ -252,8 +255,8 @@
 .found-words-trigger {
 	justify-content: center;
 	align-items: center;
-	height: 2.2em;
-	line-height: 2.2em;
+	height: 2.2rem;
+	line-height: 2.2rem;
 	width: auto;
 	outline: none;
 	border-radius: 6px;
@@ -265,7 +268,7 @@
 	background: white;
 	color: black;
 	margin: auto;
-	margin-bottom: 0.5em;
+	margin-bottom: 1rem;
 	font-family: inherit;
 	width: calc(min(100vw - 2rem, 500px));
 	white-space: nowrap;
