@@ -274,7 +274,7 @@ export default function App() {
 					name: message.name,
 					guess: message.guess,
 				}
-				if (isPangram(message.guess)) {
+				/* 	if (isPangram(message.guess)) {
 					notify(
 						"she got a PANGRAM!!! " + scoreWord(message.guess) + " points",
 						{
@@ -282,7 +282,7 @@ export default function App() {
 						}
 					)
 					setTimeout(celebrate)
-				}
+				} */
 				return
 			}
 			if (message.name != null) {
