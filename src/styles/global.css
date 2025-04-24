@@ -27,7 +27,7 @@ body {
 
 * {
 	/* disable bouncing */
-	/* overscroll-behavior: none; */
+	overscroll-behavior: none;
 	scrollbar-color: var(--scrollbar-bg) var(--scrollbar-fg);
 	/* disable tappy zoom */
 	touch-action: manipulation;
