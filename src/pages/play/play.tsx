@@ -6,7 +6,7 @@ import {
 	Show,
 	untrack,
 } from "solid-js"
-import "./app.css"
+import "./play.css"
 import {useKeyDownEvent} from "@solid-primitives/keyboard"
 import {isValidAutomergeUrl} from "@automerge/automerge-repo"
 import repo from "../../repo/export.ts"
@@ -25,7 +25,9 @@ import {
 	scoreWord,
 } from "../../lib.ts"
 import Progress from "../../progress.tsx"
-import {A, useLocation, useNavigate} from "@solidjs/router"
+import {useLocation, useNavigate} from "@solidjs/router"
+import {DropdownMenu} from "@kobalte/core/dropdown-menu"
+import {Dialog} from "@kobalte/core/dialog"
 
 function createInitialState(): GameState {
 	return GameState.parse({})
@@ -141,20 +143,6 @@ export default function App() {
 		return GuessResult.Success
 	}
 
-	const keydown = useKeyDownEvent()
-	function onkeyup(event: KeyboardEvent) {
-		event.preventDefault()
-		event.stopPropagation()
-		event.stopImmediatePropagation()
-		if (event.key == "Enter") {
-			guess()
-		}
-	}
-	window.addEventListener("keyup", onkeyup)
-	onCleanup(() => {
-		window.removeEventListener("keyup", onkeyup)
-	})
-
 	const canBeInserted = (key: string) => {
 		if (key.length !== 1) return false
 		if (!game()) return false
@@ -221,9 +209,18 @@ export default function App() {
 		}
 	}
 
+	const keydown = useKeyDownEvent()
 	createEffect(() => {
 		const event = keydown()
 		if (!event) return
+		document.activeElement?.blur()
+		if (event.key === "Enter") {
+			event.preventDefault()
+			event.stopPropagation()
+			event.stopImmediatePropagation()
+			guess()
+			return
+		}
 		/* no mod keys */
 		if (event.altKey || event.ctrlKey || event.metaKey) return
 		const key = event.key.toLowerCase()
@@ -276,6 +273,15 @@ export default function App() {
 					letter: prior?.letter ?? "",
 					name: message.name,
 					guess: message.guess,
+				}
+				if (isPangram(message.guess)) {
+					notify(
+						"she got a PANGRAM!!! " + scoreWord(message.guess) + " points",
+						{
+							icon: "🤩",
+						}
+					)
+					setTimeout(celebrate)
 				}
 				return
 			}
@@ -371,12 +377,16 @@ export default function App() {
 			setTimeout(celebrate, 250)
 			setTimeout(celebrate, 500)
 			setTimeout(celebrate, 750)
-			setInterval(() => {
+			let int = setInterval(() => {
 				celebrate(["ffff00"])
 				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
 				setTimeout(() => celebrate(["ffff00"]), 500)
 				setTimeout(() => celebrate(["00ffff"]), 750)
-			}, 1000)
+			}, 750)
+			setTimeout(() => {
+				clearInterval(int)
+				celebrate(["33ccff", "ff2a50", "ffff00", "00ffff", "ff00ff"])
+			}, 5000)
 		}
 
 		if (score() === game()?.high) {
@@ -386,6 +396,50 @@ export default function App() {
 
 	return (
 		<main>
+			<Show when={game() && gameState()}>
+				<DropdownMenu>
+					<DropdownMenu.Trigger class="dropdown-menu__trigger">
+						<span>commands</span>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Portal>
+						<DropdownMenu.Content class="dropdown-menu__content">
+							<DropdownMenu.Item
+								class="dropdown-menu__item"
+								onSelect={() => {
+									navigator.clipboard.writeText(location.href)
+									notify("copied to clipboard", {icon: "📋"})
+								}}>
+								<span class="dropdown-menu__item-left">🌐</span> copy url
+							</DropdownMenu.Item>
+							<DropdownMenu.Item
+								class="dropdown-menu__item"
+								onSelect={() => {
+									location.hash = ""
+									nav("/")
+								}}>
+								<span class="dropdown-menu__item-left">🏡</span> go to front
+								page
+							</DropdownMenu.Item>
+							<Show when={!gameState()?.over}>
+								<DropdownMenu.Item
+									class="dropdown-menu__item"
+									onSelect={() => {
+										const sure = confirm(
+											"are you sure? this will end the game forever for everyone!"
+										)
+										if (sure) {
+											gameHandle()?.change(state => {
+												state.over = true
+											})
+										}
+									}}>
+									<span class="dropdown-menu__item-left">✅</span> give up
+								</DropdownMenu.Item>
+							</Show>
+						</DropdownMenu.Content>
+					</DropdownMenu.Portal>
+				</DropdownMenu>
+			</Show>
 			<h1>spelling chee & spelling zee</h1>
 
 			<Show when={game() && gameState()}>
@@ -500,64 +554,50 @@ export default function App() {
 						</button>
 					</div>
 
-					<details onClick={event => event.target.blur()}>
-						<summary>found</summary>
-						<ul class="found">
-							<Show when={gameState()?.found?.length === 0}>
-								You haven't found a single word yet. Better get started!
-							</Show>
-							<For each={gameState()?.found?.toReversed()}>
-								{word => (
-									<li>
-										<span
-											classList={{
-												"found-pangram-marker": true,
-												show: isPangram(word),
-											}}>
-											✨
-										</span>
-										<span class="found-score">{scoreWord(word)}</span>
-										<span class="found-word">{word}</span>
-									</li>
-								)}
-							</For>
-						</ul>
-					</details>
+					<Dialog>
+						<Dialog.Trigger
+							onClick={event => event.target.blur()}
+							class="dialog__trigger">
+							show found answers
+						</Dialog.Trigger>
+						<Dialog.Portal>
+							<Dialog.Overlay class="dialog__overlay" />
+							<div class="dialog__positioner">
+								<Dialog.Content class="dialog__content">
+									<div class="dialog__header">
+										<Dialog.CloseButton class="dialog__close-button">
+											<Dialog.CloseButton class="dialog__close-button">
+												⨯
+											</Dialog.CloseButton>
+										</Dialog.CloseButton>
+									</div>
 
-					<button
-						class="copy"
-						onClick={event => {
-							navigator.clipboard.writeText(location.href)
-							notify("copied to clipboard", {icon: "📋"})
-							event.target.blur()
-						}}>
-						copy url
-					</button>
-					<a
-						href="/"
-						style={{display: "block"}}
-						onClick={() => {
-							location.hash = ""
-							nav("/", {replace: true})
-						}}>
-						go to front page
-					</a>
-
-					<button
-						class="give-up"
-						onClick={event => {
-							const sure = confirm(
-								"are you sure? this will end the game forever for everyone!"
-							)
-							if (sure) {
-								gameHandle()?.change(state => {
-									state.over = true
-								})
-							}
-							event.target.blur()
-						}}>
-						give up and see answers
-					</button>
+									<Dialog.Description class="dialog__description">
+										<ul class="found">
+											<Show when={gameState()?.found?.length === 0}>
+												You haven't found a single word yet. Better get started!
+											</Show>
+											<For each={gameState()?.found?.toReversed()}>
+												{word => (
+													<li>
+														<span
+															classList={{
+																"found-pangram-marker": true,
+																show: isPangram(word),
+															}}>
+															✨
+														</span>
+														<span class="found-score">{scoreWord(word)}</span>
+														<span class="found-word">{word}</span>
+													</li>
+												)}
+											</For>
+										</ul>
+									</Dialog.Description>
+								</Dialog.Content>
+							</div>
+						</Dialog.Portal>
+					</Dialog>
 				</Show>
 			</Show>
 			<Toaster />
