@@ -27,7 +27,9 @@ import {
 import Progress from "../../progress.tsx"
 import {useLocation, useNavigate} from "@solidjs/router"
 import {DropdownMenu} from "@kobalte/core/dropdown-menu"
-import {Dialog} from "@kobalte/core/dialog"
+
+const IS_BASICALLY_A_PHONE =
+	typeof window != "undefined" && window.matchMedia("(pointer: coarse)").matches
 
 function createInitialState(): GameState {
 	return GameState.parse({})
@@ -505,8 +507,15 @@ export default function App() {
 								{(letter, index) => (
 									<span
 										on:click={event => {
-											insert(letter)
+											if (!IS_BASICALLY_A_PHONE) {
+												insert(letter)
+											}
 											event.target.blur()
+										}}
+										onTouchStart={() => {
+											if (IS_BASICALLY_A_PHONE) {
+												insert(letter)
+											}
 										}}
 										classList={{
 											letter: true,
@@ -547,9 +556,16 @@ export default function App() {
 
 						<div class="buttons">
 							<button
-								onClick={event => {
-									local.guess = local.guess.slice(0, -1)
+								on:click={event => {
+									if (!IS_BASICALLY_A_PHONE) {
+										local.guess = local.guess.slice(0, -1)
+									}
 									event.target.blur()
+								}}
+								onTouchStart={() => {
+									if (IS_BASICALLY_A_PHONE) {
+										local.guess = local.guess.slice(0, -1)
+									}
 								}}>
 								backspace
 							</button>
@@ -561,9 +577,16 @@ export default function App() {
 								shuffle
 							</button>
 							<button
-								onClick={event => {
-									guess()
+								on:click={event => {
+									if (!IS_BASICALLY_A_PHONE) {
+										guess()
+									}
 									event.target.blur()
+								}}
+								onTouchStart={() => {
+									if (IS_BASICALLY_A_PHONE) {
+										guess()
+									}
 								}}>
 								guess
 							</button>
