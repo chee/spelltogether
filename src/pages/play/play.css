@@ -89,6 +89,7 @@
 	display: block;
 	position: relative;
 	height: 1em;
+	will-change: opacity;
 
 	&.remote {
 		color: var(--remote-color);
