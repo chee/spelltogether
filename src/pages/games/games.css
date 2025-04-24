@@ -1,6 +1,7 @@
-main {
+.games-main {
 	width: 90vw;
 	max-width: 500px;
+	text-align: left;
 }
 
 .game-letters {
@@ -29,4 +30,18 @@ article {
 
 h1 {
 	margin-bottom: 2em;
+}
+
+.fun-button {
+	--line: var(--blue-crayola);
+	padding: 4px 8px;
+	border: 1px solid var(--line);
+	border-radius: 18px;
+	background: white;
+	color: var(--line);
+	&.danger {
+		&:hover {
+			--line: var(--red);
+		}
+	}
 }

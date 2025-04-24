@@ -1,3 +1,9 @@
+.play-game {
+	width: 100vw;
+	max-width: 500px;
+	margin: auto;
+}
+
 .letters {
 	margin-top: 1em;
 	display: flex;
@@ -133,39 +139,6 @@
 	}
 }
 
-.found {
-	display: flex;
-	flex-direction: column;
-	list-style: none;
-	/* border: 1px solid; */
-	gap: 1em;
-	padding-inline: 0.5rem;
-}
-
-.found li {
-	display: flex;
-}
-
-.found-word {
-	padding: 0 8px;
-	font-weight: 500;
-}
-
-.found-score {
-	font-size: 0.75em;
-	background: var(--blue);
-	color: white;
-	padding: 4px 8px;
-	border-radius: 16px;
-}
-
-.found-pangram-marker {
-	opacity: 0;
-	&.show {
-		opacity: 1;
-	}
-}
-
 .answers {
 	columns: 4 4em;
 	text-align: left;
@@ -275,132 +248,101 @@
 	}
 }
 
-.dialog__trigger {
-	appearance: none;
-	display: inline-flex;
+.found-words-trigger {
 	justify-content: center;
 	align-items: center;
-	height: 40px;
+	height: 2.2em;
+	line-height: 2.2em;
 	width: auto;
 	outline: none;
 	border-radius: 6px;
 	padding: 0 16px;
-	background-color: hsl(200 98% 39%);
-	color: white;
 	font-size: 16px;
-	line-height: 0;
 	transition: 250ms background-color;
-	border: 0;
-}
-.dialog__trigger:hover {
-	background-color: hsl(201 96% 32%);
-}
-.dialog__trigger:focus-visible {
-	outline: 2px solid hsl(200 98% 39%);
-	outline-offset: 2px;
-}
-.dialog__trigger:active {
-	background-color: hsl(201 90% 27%);
-}
-.dialog__overlay {
-	position: fixed;
-	inset: 0;
-	z-index: 50;
-	background-color: rgb(0 0 0 / 0.2);
-	animation: overlayHide 250ms ease 100ms forwards;
-}
-.dialog__overlay[data-expanded] {
-	animation: overlayShow 250ms ease;
-}
-
-.dialog__positioner {
-	position: fixed;
-	inset: 0;
-	z-index: 50;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.dialog__content {
-	position: relative;
-	z-index: 50;
-	width: min(calc(100vw - 2rem), 750px);
-	border: 1px solid hsl(240 5% 84%);
-	border-radius: 8px;
-	background-color: white;
-	box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-	animation: contentHide 300ms ease-in forwards;
+	border: 1px solid black;
+	border-color: #ccc;
 	background: white;
-	padding-bottom: 0.5em;
-}
-.dialog__content[data-expanded] {
-	animation: contentShow 300ms ease-out;
+	color: black;
+	margin: auto;
+	margin-bottom: 0.5em;
+	font-family: inherit;
+	width: calc(min(100vw - 2rem, 500px));
+	white-space: nowrap;
+	text-align: left;
+	display: block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	position: relative;
+	&:empty::before {
+		content: "Your found words...";
+		color: #ccc;
+	}
+	&:hover {
+		outline: 2px solid black;
+	}
+	&::after {
+		position: absolute;
+		content: "";
+		height: 1.25rem;
+		width: 1.25rem;
+		display: block;
+		background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+		right: 0.5rem;
+		top: 50%;
+		translate: 0 -50%;
+	}
 }
 
-.dialog__description {
-	columns: 2 4em;
+.found-words {
+	gap: 1em;
+
+	text-align: left;
 	overflow: scroll;
-	max-height: 100vw;
+	height: 100%;
+	border: 2px solid black;
+	width: 80%;
+	margin: auto;
+	border-radius: 4px;
+	width: calc(min(100vw - 2rem, 500px));
+	min-height: 500px;
+	padding: 0.5em 0.75em;
 }
 
-@media (min-width: 768px) {
-	.dialog__description {
+.found-words__head {
+	position: relative;
+	&::after {
+		position: absolute;
+		content: "";
+		height: 1.25rem;
+		width: 1.25rem;
+		display: block;
+		background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+		right: -0.25rem;
+		rotate: 180deg;
+		top: 50%;
+		translate: 0 -50%;
+	}
+}
+
+.found-words__body {
+	margin-top: 0.5em;
+	columns: 2 3em;
+}
+
+@media screen and (min-width: 768px) {
+	.found-words__body {
 		columns: 4 3em;
 	}
 }
 
-.dialog__header {
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-	position: absolute;
-	right: 0;
-}
-.dialog__close-button {
-	font-size: 1.4em;
-	color: hsl(240 5% 34%);
-	background: transparent;
-	border: 0;
-	&:hover {
-		color: hsl(240 5% 24%);
-	}
-	margin-left: auto;
-	margin-bottom: 0;
+.found-word {
+	font-weight: 400;
 }
 
-@keyframes overlayShow {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-@keyframes overlayHide {
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-	}
-}
-@keyframes contentShow {
-	from {
-		opacity: 0;
-		transform: scale(0.96);
-	}
-	to {
-		opacity: 1;
-		transform: scale(1);
-	}
-}
-@keyframes contentHide {
-	from {
-		opacity: 1;
-		transform: scale(1);
-	}
-	to {
-		opacity: 0;
-		transform: scale(0.96);
+.found-word--pangram {
+	font-weight: 600;
+	&::before {
+		content: "✳️";
+		margin-right: 0.25em;
 	}
 }

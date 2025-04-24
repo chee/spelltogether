@@ -394,8 +394,10 @@ export default function App() {
 		}
 	})
 
+	const [showingFound, setShowingFound] = createSignal(false)
+
 	return (
-		<main>
+		<main class="play-game">
 			<Show when={game() && gameState()}>
 				<DropdownMenu>
 					<DropdownMenu.Trigger class="dropdown-menu__trigger">
@@ -440,12 +442,11 @@ export default function App() {
 					</DropdownMenu.Portal>
 				</DropdownMenu>
 			</Show>
-			<h1>spelling chee & spelling zee</h1>
 
 			<Show when={game() && gameState()}>
 				<Show when={levels()}>
 					<Progress
-						score={score()}
+						score={score() ?? 0}
 						levelValues={levels()!}
 						levelNames={levelNames}
 						high={game()!.high}
@@ -482,122 +483,118 @@ export default function App() {
 					</div>
 				</Show>
 				<Show when={!gameState()!.over}>
-					<div class="guessers">
-						<Guess guess={local.guess} name={local.name} />
+					<Show when={!showingFound()}>
+						<div
+							class="found-words-trigger"
+							onClick={() => setShowingFound(true)}>
+							{gameState()!.found.toReversed().join(" ")}
+						</div>
+						<div class="guessers">
+							<Guess guess={local.guess} name={local.name} />
 
-						<For each={Object.values(remote)}>
-							{remote => (
-								<Show when={remote.name}>
-									<Guess guess={remote.guess} name={remote.name} />
+							<For each={Object.values(remote)}>
+								{remote => (
+									<Show when={remote.name}>
+										<Guess guess={remote.guess} name={remote.name} />
+									</Show>
+								)}
+							</For>
+						</div>
+						<div class="letters">
+							<For each={letters()}>
+								{(letter, index) => (
+									<span
+										onClick={event => {
+											insert(letter)
+											event.target.blur()
+										}}
+										classList={{
+											letter: true,
+											centre: letter === centre(),
+											remote: isRemoteLetter(letter!),
+											local: letter === localLetter(),
+											["letter-" + index()]: true,
+										}}>
+										<svg viewBox="0 0 120 104">
+											<polygon
+												class="hexagon remote"
+												points="0,52 30,0 90,0 120,52 90,104 30,104"></polygon>
+
+											<polygon
+												class="hexagon local"
+												points="4,52 32.4,4 87.6,4 116,52 87.6,100 32.4,100"></polygon>
+
+											<polygon
+												class="hexagon inner"
+												points="8,52 34.8,8 85.2,8 112,52 85.2,96 34.8,96"></polygon>
+
+											<text class="cell-letter" x="50" y="25" dy="1em">
+												{letter}
+											</text>
+										</svg>
+									</span>
+								)}
+							</For>
+						</div>
+
+						<div class="buttons">
+							<button
+								onClick={event => {
+									local.guess = local.guess.slice(0, -1)
+									event.target.blur()
+								}}>
+								backspace
+							</button>
+							<button
+								onclick={event => {
+									shuffle()
+									event.target.blur()
+								}}>
+								shuffle
+							</button>
+							<button
+								onClick={event => {
+									guess()
+									event.target.blur()
+								}}>
+								guess
+							</button>
+						</div>
+					</Show>
+					<Show when={showingFound()}>
+						<div
+							class="found-words"
+							role="list"
+							onClick={() => setShowingFound(false)}>
+							<div class="found-words__head">
+								<Show when={gameState()?.found?.length === 0}>
+									You haven't found a single word yet. Better get started!
 								</Show>
-							)}
-						</For>
-					</div>
-					<div class="letters">
-						<For each={letters()}>
-							{(letter, index) => (
-								<span
-									onClick={event => {
-										insert(letter)
-										event.target.blur()
-									}}
-									classList={{
-										letter: true,
-										centre: letter === centre(),
-										remote: isRemoteLetter(letter!),
-										local: letter === localLetter(),
-										["letter-" + index()]: true,
-									}}>
-									<svg viewBox="0 0 120 104">
-										<polygon
-											class="hexagon remote"
-											points="0,52 30,0 90,0 120,52 90,104 30,104"></polygon>
-
-										<polygon
-											class="hexagon local"
-											points="4,52 32.4,4 87.6,4 116,52 87.6,100 32.4,100"></polygon>
-
-										<polygon
-											class="hexagon inner"
-											points="8,52 34.8,8 85.2,8 112,52 85.2,96 34.8,96"></polygon>
-
-										<text class="cell-letter" x="50" y="25" dy="1em">
-											{letter}
-										</text>
-									</svg>
-								</span>
-							)}
-						</For>
-					</div>
-
-					<div class="buttons">
-						<button
-							onClick={event => {
-								local.guess = local.guess.slice(0, -1)
-								event.target.blur()
-							}}>
-							backspace
-						</button>
-						<button
-							onclick={event => {
-								shuffle()
-								event.target.blur()
-							}}>
-							shuffle
-						</button>
-						<button
-							onClick={event => {
-								guess()
-								event.target.blur()
-							}}>
-							guess
-						</button>
-					</div>
-
-					<Dialog>
-						<Dialog.Trigger
-							onClick={event => event.target.blur()}
-							class="dialog__trigger">
-							show found answers
-						</Dialog.Trigger>
-						<Dialog.Portal>
-							<Dialog.Overlay class="dialog__overlay" />
-							<div class="dialog__positioner">
-								<Dialog.Content class="dialog__content">
-									<div class="dialog__header">
-										<Dialog.CloseButton class="dialog__close-button">
-											<Dialog.CloseButton class="dialog__close-button">
-												⨯
-											</Dialog.CloseButton>
-										</Dialog.CloseButton>
-									</div>
-
-									<Dialog.Description class="dialog__description">
-										<ul class="found">
-											<Show when={gameState()?.found?.length === 0}>
-												You haven't found a single word yet. Better get started!
-											</Show>
-											<For each={gameState()?.found?.toReversed()}>
-												{word => (
-													<li>
-														<span
-															classList={{
-																"found-pangram-marker": true,
-																show: isPangram(word),
-															}}>
-															✨
-														</span>
-														<span class="found-score">{scoreWord(word)}</span>
-														<span class="found-word">{word}</span>
-													</li>
-												)}
-											</For>
-										</ul>
-									</Dialog.Description>
-								</Dialog.Content>
+								<Show when={gameState()?.found?.length ?? 0 > 0}>
+									You have found {gameState()?.found?.length} word
+									<Show when={gameState()?.found?.length !== 1}>s</Show>
+								</Show>
 							</div>
-						</Dialog.Portal>
-					</Dialog>
+							<div class="found-words__body">
+								<For each={gameState()?.found?.toReversed()}>
+									{word => (
+										<div
+											role="listitem"
+											classList={{
+												"found-word": true,
+												"found-words--pangram": isPangram(word),
+											}}
+											title={(function () {
+												const score = scoreWord(word)
+												return score + " point" + (score == 1 ? "" : "s")
+											})()}>
+											{word}
+										</div>
+									)}
+								</For>
+							</div>
+						</div>
+					</Show>
 				</Show>
 			</Show>
 			<Toaster />

@@ -1,13 +1,6 @@
 import type {AutomergeUrl} from "@automerge/automerge-repo"
 import {makePersisted} from "@solid-primitives/storage"
-import {
-	createEffect,
-	createSignal,
-	For,
-	mapArray,
-	Show,
-	Suspense,
-} from "solid-js"
+import {createSignal, For, mapArray, Show, Suspense} from "solid-js"
 import repo from "../../repo/export.ts"
 import {useDocument} from "solid-automerge"
 import {A, useNavigate} from "@solidjs/router"
@@ -26,8 +19,8 @@ export default function Games() {
 	const nav = useNavigate()
 
 	return (
-		<main>
-			<h1>games</h1>
+		<main class="games-main">
+			<h1>The Games We Play</h1>
 			<For each={gameStates()}>
 				{([gameState, handle]) => {
 					const game = () => games[gameState()?.game ?? 0]
@@ -72,6 +65,15 @@ export default function Games() {
 										/>
 									</Show>
 								</div>
+								<button
+									class="fun-button danger"
+									onClick={event => {
+										;(event.altKey ||
+											confirm("are you sure you want to forget this game?")) &&
+											setSeen(seen().filter(url => url !== handle()?.url))
+									}}>
+									forget
+								</button>
 							</article>
 						</Suspense>
 					)

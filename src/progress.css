@@ -21,10 +21,12 @@
 		width: 100%;
 	}
 	@media (max-width: 500px) {
-		flex-direction: column-reverse;
+		flex-direction: column;
+		margin-bottom: 2em;
 
 		.bar {
 			width: 80%;
+			margin-top: -1em;
 		}
 	}
 	.line {
