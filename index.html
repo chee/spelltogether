@@ -24,6 +24,22 @@
 	<meta property="og:description" content="friends who spell together" />
 	<meta property="og:type" content="website" />
 	<meta property="og:image" content="https://spell.galaxy.observer/og.png" />
+	<script>
+		// disable double tap to zoom on mobile
+		window.addEventListener('touchstart', function (event) {
+			if (event.touches.length > 1) {
+				event.preventDefault();
+			}
+		}, { passive: false });
+		let lastTouchEnd = 0;
+		document.addEventListener('touchend', function (event) {
+			const now = (new Date()).getTime();
+			if (now - lastTouchEnd <= 300) {
+				event.preventDefault();
+			}
+			lastTouchEnd = now;
+		}, false);
+	</script>
 </head>
 
 
