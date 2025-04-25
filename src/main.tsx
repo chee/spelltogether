@@ -10,7 +10,10 @@ render(
 		<Router>
 			{[
 				{path: "/", component: lazy(() => import("./pages/home/home.tsx"))},
-				{path: "/play", component: lazy(() => import("./pages/play/play.tsx"))},
+				{
+					path: "/play",
+					component: lazy(() => import("./pages/play/play.tsx")),
+				},
 				{
 					path: "/games",
 					component: lazy(() => import("./pages/games/games.tsx")),

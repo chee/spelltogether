@@ -1,12 +1,13 @@
-import {isValidAutomergeUrl} from "@automerge/automerge-repo"
+import {
+	isValidAutomergeUrl,
+	isValidDocumentId,
+	parseAutomergeUrl,
+} from "@automerge/automerge-repo"
 import {useNavigate} from "@solidjs/router"
 import "./home.css"
 
 export default function Home() {
 	const nav = useNavigate()
-	if (location.hash && isValidAutomergeUrl(location.hash.slice(1))) {
-		nav("/play/#" + location.hash)
-	}
 	return (
 		<main>
 			<h1>Spelltogether</h1>
@@ -24,7 +25,9 @@ export default function Home() {
 						try {
 							if (url) {
 								if (isValidAutomergeUrl(url)) {
-									nav("/play/#" + url)
+									nav("/play/" + parseAutomergeUrl(url).documentId)
+								} else if (isValidDocumentId(url)) {
+									nav("/play/" + url)
 								} else if (url.startsWith("https://")) {
 									location.href = url
 								} else {

@@ -20,6 +20,9 @@ importers:
       '@kobalte/core':
         specifier: ^0.13.9
         version: 0.13.9(solid-js@1.9.5)
+      '@netlify/edge-functions':
+        specifier: ^2.12.0
+        version: 2.12.0
       '@solid-primitives/keyboard':
         specifier: ^1.3.0
         version: 1.3.0(solid-js@1.9.5)
@@ -825,6 +828,9 @@ packages:
     resolution: {integrity: sha512-eeU60A3kprIiBDAfv9gUJX1tXGLuZiKMajUfSQURAF2pk4ZoMYiqIzmrMBvzcxP39xnYttgTyQEVLwiTZnrV4w==}
     peerDependencies:
       solid-js: ^1.8.8
+
+  '@netlify/edge-functions@2.12.0':
+    resolution: {integrity: sha512-6EWKqCQvOWyM6CHOofvDglX8qkBL2xcMF2T0h7kzZRrdBvHMRgxTk6BmPlBGt8z4LubSQo6vDAb46MYNJ7ZyaA==}
 
   '@noble/hashes@1.7.2':
     resolution: {integrity: sha512-biZ0NUSxyjLLqo6KxEJ1b+C2NAx0wtDoFvCaXHGgUkeHzf3Xc1xKumFKREuT7f7DARNZ/slvYUwFG6B0f2b6hQ==}
@@ -3067,6 +3073,8 @@ snapshots:
       '@solid-primitives/refs': 1.1.0(solid-js@1.9.5)
       '@solid-primitives/utils': 6.3.0(solid-js@1.9.5)
       solid-js: 1.9.5
+
+  '@netlify/edge-functions@2.12.0': {}
 
   '@noble/hashes@1.7.2': {}
 

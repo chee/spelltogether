@@ -8,7 +8,7 @@ import {
 } from "solid-js"
 import "./play.css"
 import {useKeyDownEvent} from "@solid-primitives/keyboard"
-import {isValidAutomergeUrl} from "@automerge/automerge-repo"
+import {isValidAutomergeUrl, parseAutomergeUrl} from "@automerge/automerge-repo"
 import repo from "../../repo/export.ts"
 import {useDocument} from "solid-automerge"
 import {createMutable} from "solid-js/store"
@@ -25,7 +25,12 @@ import {
 	scoreWord,
 } from "../../lib.ts"
 import Progress from "../../progress.tsx"
-import {useLocation, useNavigate} from "@solidjs/router"
+import {
+	useLocation,
+	useNavigate,
+	useParams,
+	useSearchParams,
+} from "@solidjs/router"
 import {DropdownMenu} from "@kobalte/core/dropdown-menu"
 
 const IS_BASICALLY_A_PHONE =
@@ -68,16 +73,23 @@ export default function App() {
 	localStorage.setItem("name", name)
 
 	const loc = useLocation()
+	const [searchParams] = useSearchParams()
 
 	const [gameState, gameHandle] = useDocument<GameState>(
 		() => {
+			let id = searchParams?.game
+			if (id) {
+				return "automerge:" + id
+			}
 			const hash = loc.hash.slice(1)
 			if (isValidAutomergeUrl(hash)) {
-				return hash
+				const {documentId} = parseAutomergeUrl(hash)
+				nav("/play/?game=" + documentId)
+				return "automerge:" + documentId
 			}
-			const url = repo.create(createInitialState()).url
-			nav("/play/#" + url)
-			return url
+			id = repo.create(createInitialState()).documentId
+			nav("/play/?game=" + id)
+			return "automerge:" + id
 		},
 		{repo}
 	)
