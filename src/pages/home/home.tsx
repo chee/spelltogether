@@ -1,4 +1,4 @@
-import {isValidAutomergeUrl, isValidDocumentId} from "@automerge/automerge-repo"
+import {isValidAutomergeUrl} from "@automerge/automerge-repo"
 import {useNavigate} from "@solidjs/router"
 import "./home.css"
 
@@ -10,7 +10,10 @@ export default function Home() {
 	return (
 		<main>
 			<h1>Spelltogether</h1>
-			<img src="/favicon.svg" alt=""></img>
+			<img
+				src="/favicon.svg"
+				alt=""
+				style={{"max-width": "calc(100% - 4em)"}}></img>
 			<p>
 				<button
 					class="join"

@@ -20,7 +20,7 @@ export default function Games() {
 
 	return (
 		<main class="games-main">
-			<h1>The Games We Play</h1>
+			<h1 class="games-title">The Games We Play</h1>
 			<For each={gameStates()}>
 				{([gameState, handle]) => {
 					const game = () => games[gameState()?.game ?? 0]
@@ -30,7 +30,7 @@ export default function Games() {
 
 					return (
 						<Suspense>
-							<article classList={{over: gameState()?.over}}>
+							<article classList={{over: gameState()?.over, "game-card": true}}>
 								<div onclick={() => nav(url())}>
 									<A class="game-letters" href={url()}>
 										{game()?.edge[0]}
