@@ -1,0 +1,5 @@
+{
+	"target": "solid",
+	"quoteStyle": "double",
+	"virtualRouteConfig": "./src/routes.ts"
+}

@@ -3,6 +3,7 @@ import solid from "vite-plugin-solid"
 import wasm from "vite-plugin-wasm"
 import {VitePWA} from "vite-plugin-pwa"
 import autoprefixer from "autoprefixer"
+import {TanStackRouterVite} from "@tanstack/router-plugin/vite"
 
 export default defineConfig({
 	plugins: [
@@ -21,7 +22,13 @@ export default defineConfig({
 				theme_color: "#00FDBC",
 			},
 		}),
-		solid(),
+		solid({
+			ssr: true,
+		}),
+		TanStackRouterVite({
+			target: "solid",
+			autoCodeSplitting: true,
+		}),
 		wasm(), // an inline vite plugin to handle .words files importing them as an array of
 		// strings, one for each line
 		{

@@ -1,11 +1,12 @@
-import {isValidAutomergeUrl} from "@automerge/automerge-repo"
+import {isValidAutomergeUrl, parseAutomergeUrl} from "@automerge/automerge-repo"
 import {useNavigate} from "@solidjs/router"
 import "./home.css"
 
 export default function Home() {
 	const nav = useNavigate()
-	if (location.hash && isValidAutomergeUrl(location.hash.slice(1))) {
-		nav("/play/#" + location.hash)
+	const hashy = location.hash.slice(1)
+	if (isValidAutomergeUrl(hashy)) {
+		nav("/play/" + parseAutomergeUrl(hashy).documentId)
 	}
 	return (
 		<main>
