@@ -350,9 +350,9 @@
 }
 
 .found-word--pangram {
-	font-weight: 600;
-	&::before {
-		content: "✳️";
-		margin-right: 0.25em;
+	font-weight: 500;
+	&::after {
+		content: "✨";
+		margin-left: 0.25em;
 	}
 }

@@ -636,7 +636,7 @@ export default function App() {
 											role="listitem"
 											classList={{
 												"found-word": true,
-												"found-words--pangram": isPangram(word),
+												"found-word--pangram": isPangram(word),
 											}}
 											title={(function () {
 												const score = scoreWord(word)
